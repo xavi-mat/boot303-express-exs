@@ -3,6 +3,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const path = require("path");
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constants
@@ -29,7 +30,13 @@ app.use(cors());
 ////////////////////////////////////////////////////////////////////////////////
 // Endpoints
 app.get('/', (req, res) => {
-    res.send({ msg: 'welcome' });
+    res.sendFile(path.join(__dirname, 'pages', 'index.html'));
+    // res.send({ msg: 'welcome' });
+});
+
+app.get('/script', (req, res) => {
+    res.set('Content-Type', 'text/javascript');
+    res.sendFile(path.join(__dirname, 'scripts', 'script.js'))
 });
 
 app.get('/products', (req, res) => {
@@ -47,20 +54,20 @@ app.post('/products', (req, res) => {
             price: req.body.price
         }
         items.push(newItem);
-        res.status(201).send({msg: 'Item created', newItem, items})
+        res.status(201).send({ msg: 'Item created', newItem, items })
     }
 });
 
 // Crear endpoint para poder actualizar un producto
 app.put('/products/:id', (req, res) => {
 
-    const hasItems = items.filter(item=>item.id===+req.params.id);
+    const results = items.filter(item => item.id === +req.params.id);
 
-    if (hasItems.length > 0) {
-        const item = hasItems[0];
+    if (results.length > 0) {
+        const item = results[0];
         item.name = req.body.name ? req.body.name : item.name;
         item.price = req.body.price ? req.body.price : item.price;
-        res.status(200).send({msg: 'Item updated', item});
+        res.status(200).send({ msg: 'Item updated', items });
     } else {
         res.status(404).send({ msg: 'Product not found' });
     }
@@ -68,31 +75,31 @@ app.put('/products/:id', (req, res) => {
 
 // Crear endpoint para poder eliminar un producto
 app.delete('/products/:id', (req, res) => {
-    const hasItems = items.filter(item=>item.id===+req.params.id);
+    const hasItems = items.filter(item => item.id === +req.params.id);
 
     if (hasItems.length > 0) {
-        items = items.filter(item=>item.id!==+req.params.id);
-        res.status(200).send({msg: 'Item deleted', items});
+        items = items.filter(item => item.id !== +req.params.id);
+        res.send({ msg: 'Item deleted', items });
     } else {
-        res.status(404).send({ msg: 'Product not found' });
+        res.send({ msg: 'Product not found', items });
     }
 });
 
 // Crear filtro por price de producto
 // Crear filtro que muestre los productos con un price entre 50 y 250.
-app.get('/products/price/:min/:max', (req, res)=>{
+app.get('/products/price/:min/:max', (req, res) => {
     const results = items.filter(item =>
         item.price >= +req.params.min && item.price <= +req.params.max
     );
-    res.send({total: results.length, results});
+    res.send({ total: results.length, items: results });
 });
 
 // Crear un filtro que cuando busque en postman por parámetro el id de un producto me devuelva ese producto
 app.get('/products/:id', (req, res) => {
-    const hasItems = items.filter(item=>item.id===+req.params.id);
+    const hasItems = items.filter(item => item.id === +req.params.id);
 
     if (hasItems.length > 0) {
-        res.send({item:hasItems[0]});
+        res.send({ item: hasItems[0] });
     } else {
         res.status(404).send({ msg: 'Product not found' });
     }
@@ -101,55 +108,20 @@ app.get('/products/:id', (req, res) => {
 // Crear un filtro que cuando busque en postman por parámetro el name de un producto me devuelva ese producto
 app.get('/products/name/:name', (req, res) => {
 
-    const results = items.filter(item=>item.name===req.params.name);
+    const results = items.filter(item => item.name === req.params.name);
 
-    if (results.length > 0) {
-        res.send({ total: results.length, results });
-    } else {
-        res.status(404).send({ msg: 'No products found' });
-    }
+    res.send({ total: results.length, items: results });
 });
 
 // Crear un filtro que cuando busque en postman por parámetro el name de un producto me devuelva ese producto
 app.get('/products/search/:search', (req, res) => {
 
-    const  regex = new RegExp(`.*${req.params.search}.*`);
+    const regex = new RegExp(`.*${req.params.search}.*`, 'i');
 
-    const results = items.filter(item=>regex.test(item.name));
+    const results = items.filter(item => regex.test(item.name));
 
-    if (results.length > 0) {
-        res.status(200).send({ total: results.length, results });
-    } else {
-        res.status(404).send({ msg: 'No products found' });
-    }
+    res.send({ total: results.length, items: results });
 });
-
-
-// app.get('/users', (req, res) => {
-//     res.send({ msg: 'users list' });
-// });
-
-// app.post('/users', (req, res) => {
-//     res.send({ msg: 'Create a user' });
-// });
-
-// app.put('/users', (req, res) => {
-//     res.send({ msg: 'Update a user' });
-// });
-
-// app.delete('/users', (req, res) => {
-//     res.send({ msg: 'Delete a user' });
-// });
-
-
-
-
-
-
-
-
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
