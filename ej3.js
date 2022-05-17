@@ -5,7 +5,7 @@ const app = express();
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
-const cositas = require("./cositas.json");
+const quotes = require("./quotes.json");
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constants
@@ -18,8 +18,8 @@ let items = require("./fakeDB.json");
 
 ////////////////////////////////////////////////////////////////////////////////
 // Functions
-function dameCositas() {
-    return cositas[Math.floor(Math.random() * cositas.length)];
+function gimmeQuotes() {
+    return quotes[Math.floor(Math.random() * quotes.length)];
 }
 
 function saveFakeDB() {
@@ -47,13 +47,13 @@ app.get('/script', (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////
 // API Endpoints
 app.get('/products', (req, res) => {
-    res.send({ description: 'Products', items, cositas:dameCositas() });
+    res.send({ description: 'Products', items, quotes:gimmeQuotes() });
 });
 
 // Crear endpoint para poder crear un producto nuevo
 app.post('/products', (req, res) => {
     if (!req.body.name || !req.body.price) {
-        res.status(422).send({ msg: 'Fill in all data', cositas:dameCositas() });
+        res.status(422).send({ msg: 'Fill in all data', quotes:gimmeQuotes() });
     } else {
         const newItem = {
             id: items.length + 1,
@@ -62,7 +62,7 @@ app.post('/products', (req, res) => {
         }
         items.push(newItem);
         saveFakeDB();
-        res.status(201).send({ msg: 'Item created', newItem, items, cositas:dameCositas() })
+        res.status(201).send({ msg: 'Item created', newItem, items, quotes:gimmeQuotes() })
     }
 });
 
@@ -76,9 +76,9 @@ app.put('/products/:id', (req, res) => {
         item.name = req.body.name ? req.body.name : item.name;
         item.price = req.body.price ? req.body.price : item.price;
         saveFakeDB();
-        res.status(200).send({ msg: 'Item updated', items, cositas:dameCositas() });
+        res.status(200).send({ msg: 'Item updated', items, quotes:gimmeQuotes() });
     } else {
-        res.status(404).send({ msg: 'Product not found', cositas:dameCositas() });
+        res.status(404).send({ msg: 'Product not found', quotes:gimmeQuotes() });
     }
 });
 
@@ -88,9 +88,9 @@ app.delete('/products/:id', (req, res) => {
 
     if (hasItems.length > 0) {
         items = items.filter(item => item.id !== +req.params.id);
-        res.send({ msg: 'Item deleted', items, cositas:dameCositas() });
+        res.send({ msg: 'Item deleted', items, quotes:gimmeQuotes() });
     } else {
-        res.send({ msg: 'Product not found', items, cositas:dameCositas() });
+        res.send({ msg: 'Product not found', items, quotes:gimmeQuotes() });
     }
 });
 
@@ -100,7 +100,7 @@ app.get('/products/price/:min/:max', (req, res) => {
     const results = items.filter(item =>
         item.price >= +req.params.min && item.price <= +req.params.max
     );
-    res.send({ total: results.length, items: results, cositas:dameCositas() });
+    res.send({ total: results.length, items: results, quotes:gimmeQuotes() });
 });
 
 // Crear un filtro que cuando busque en postman por parámetro el id de un producto me devuelva ese producto
@@ -108,9 +108,9 @@ app.get('/products/:id', (req, res) => {
     const hasItems = items.filter(item => item.id === +req.params.id);
 
     if (hasItems.length > 0) {
-        res.send({ item: hasItems[0], cositas:dameCositas() });
+        res.send({ item: hasItems[0], quotes:gimmeQuotes() });
     } else {
-        res.status(404).send({ msg: 'Product not found', cositas:dameCositas() });
+        res.status(404).send({ msg: 'Product not found', quotes:gimmeQuotes() });
     }
 });
 
@@ -119,7 +119,7 @@ app.get('/products/name/:name', (req, res) => {
 
     const results = items.filter(item => item.name === req.params.name);
 
-    res.send({ total: results.length, items: results, cositas:dameCositas() });
+    res.send({ total: results.length, items: results, quotes:gimmeQuotes() });
 });
 
 // Crear un filtro que cuando busque en postman por parámetro el name de un producto me devuelva ese producto
@@ -129,7 +129,7 @@ app.get('/products/search/:search', (req, res) => {
 
     const results = items.filter(item => regex.test(item.name));
 
-    res.send({ total: results.length, items: results, cositas:dameCositas() });
+    res.send({ total: results.length, items: results, quotes:gimmeQuotes() });
 });
 
 
