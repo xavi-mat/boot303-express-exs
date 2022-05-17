@@ -20,7 +20,7 @@ const sectProduct = document.querySelector('#product');
 const productsList = document.querySelector('#products-list');
 const productForm = document.querySelector('#product-form');
 const productH2 = document.querySelector('#product-h2');
-const cositaBox = document.querySelector('#cosita');
+const quoteBox = document.querySelector('#quote');
 const spinnerBox = document.getElementById("spinner");
 
 
@@ -87,7 +87,7 @@ function showProductsSection() {
 
 function putProducts(data) {
 
-    putCositas(data.cositas);
+    putQuotes(data.quotes);
 
     productsList.innerHTML = '';
 
@@ -192,8 +192,8 @@ function editMe(id, name, price) {
     showSection(sectProduct);
 }
 
-function putCositas(cosita) {
-    cositaBox.innerHTML = `<cite>“${cosita}”</cite> M.R.`;
+function putQuotes(quote) {
+    quoteBox.innerHTML = `<cite>“${quote}”</cite> M.R.`;
 }
 
 
