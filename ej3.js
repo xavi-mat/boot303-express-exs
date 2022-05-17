@@ -31,7 +31,6 @@ app.use(cors());
 // Endpoints
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'index.html'));
-    // res.send({ msg: 'welcome' });
 });
 
 app.get('/script', (req, res) => {
@@ -40,7 +39,7 @@ app.get('/script', (req, res) => {
 });
 
 app.get('/products', (req, res) => {
-    res.send({ description: 'Productos', items });
+    res.send({ description: 'Products', items });
 });
 
 // Crear endpoint para poder crear un producto nuevo
