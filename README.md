@@ -12,4 +12,7 @@ By [@xavi-mat](@xavi-mat).
 * Create a server with several endpoints (get, post, put, delete).
 
 ### Exercise 3
+* Create a server with functional endpoints
 
+### Extra Exercise
+* Create a functional FrontEnd for the Exercise 3
