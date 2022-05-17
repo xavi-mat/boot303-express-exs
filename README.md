@@ -9,4 +9,7 @@ By [@xavi-mat](@xavi-mat).
 * Start a server with express and log a sentence on console.
 
 ### Exercise 2
-* 
+* Create a server with several endpoints (get, post, put, delete).
+
+### Exercise 3
+
