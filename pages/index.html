@@ -18,7 +18,7 @@
 
 <body>
     <nav class="navbar navbar-expand bg-dark navbar-dark">
-        <div class="container">
+        <div class="container py-2">
             <ul class="navbar-nav">
                 <li class="nav-item me-3">
                     <button id="navbtn-products" class="btn btn-primary">Products</button>
@@ -35,22 +35,24 @@
     </nav>
 
     <main class="container mt-2">
+        <div id="cosita" class="pt-2 text-center"></div>
+
         <section id="products">
             <h2>Products</h2>
             <div id="products-list">
             </div>
         </section>
 
-        <section id="new-product" class="d-none">
-            <form id="new-product-form">
-                <input type="hidden" name="newId" value="0">
-                <h2 id="product-h2">New Product</h2>
+        <section id="product" class="d-none">
+            <form id="product-form">
+                <input type="hidden" name="prodId" value="0">
+                <h2 id="product-h2">Product</h2>
                 <div class="row">
                     <div class="col-8">
-                        <input type="text" class="form-control" id="newName" placeholder="Name">
+                        <input type="text" class="form-control" id="prodName" placeholder="Name">
                     </div>
                     <div class="col-4">
-                        <input type="text" class="form-control" id="newPrice" placeholder="Price">
+                        <input type="text" class="form-control" id="prodPrice" placeholder="Price">
                     </div>
                 </div>
                 <br>
@@ -64,10 +66,16 @@
         </section>
     </main>
 
-    <div>
-        <footer class="mt-5 p-4 bg-dark text-white text-center">
-            Footer
-        </footer>
+    <footer class="mt-5 p-3 bg-dark text-light text-center fixed-bottom">
+        &copy; Xavimat - Exercise for <a href="http://thebridge.tech" target="_blank" rel="noopener noreferrer"
+            class="text-light">The Bridge</a>
+    </footer>
+
+    <div id="spinner" class="d-none">
+        <div class="fixed-top h-100 d-flex justify-content-center align-items-center">
+            <div class="spinner-grow" style="width: 3rem; height: 3rem;"></div>
+            <div class="display-5">&nbsp;Loading...</div>
+        </div>
     </div>
 </body>
 

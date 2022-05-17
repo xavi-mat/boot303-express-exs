@@ -16,10 +16,12 @@ const btnProducts = document.querySelector('#navbtn-products');
 const btnNewProduct = document.querySelector('#navbtn-new-product');
 const searchForm = document.querySelector('#search-form');
 const sectProducts = document.querySelector('#products');
-const sectNewProduct = document.querySelector('#new-product');
+const sectProduct = document.querySelector('#product');
 const productsList = document.querySelector('#products-list');
-const newProductForm = document.querySelector('#new-product-form');
+const productForm = document.querySelector('#product-form');
 const productH2 = document.querySelector('#product-h2');
+const cositaBox = document.querySelector('#cosita');
+const spinnerBox = document.getElementById("spinner");
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,43 +35,47 @@ const productH2 = document.querySelector('#product-h2');
 ////////////////////////////////////////////////////////////////////////////////
 // Utils
 function hideAllSections() {
-    document.querySelectorAll('section').forEach(sect=>sect.classList.add('d-none'));
+    spinnerBox.classList.remove("d-none");
+    document.querySelectorAll('section').forEach(sect => sect.classList.add('d-none'));
 }
 
 function showSection(sect) {
-    sect.classList.remove('d-none');
+    setTimeout(() => {
+        sect.classList.remove("d-none");
+        spinnerBox.classList.add("d-none");
+    }, 300);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Calls to API
 function getList(callback) {
     axios(APIURL + 'products')
-        .then(res=>callback(res.data))
-        .catch(err=>console.error(err));
+        .then(res => callback(res.data))
+        .catch(err => console.error(err));
 }
 
 function getSearch(search, callback) {
     axios(APIURL + `products/search/${search}`)
-        .then(res=>callback(res.data))
-        .catch(err=>console.error(err));
+        .then(res => callback(res.data))
+        .catch(err => console.error(err));
 }
 
 function deleteItem(id, callback) {
     axios.delete(APIURL + `products/${id}`)
-        .then(res=>callback(res.data))
-        .catch(err=>console.error(err));
+        .then(res => callback(res.data))
+        .catch(err => console.error(err));
 }
 
 function postNewProduct(newItem, callback) {
     axios.post(APIURL + 'products', newItem)
-        .then(res=>callback(res.data))
-        .catch(err=>console.error(err));
+        .then(res => callback(res.data))
+        .catch(err => console.error(err));
 }
 
 function putEditProduct(item, callback) {
     axios.put(APIURL + `products/${item.id}`, item)
-        .then(res=>callback(res.data))
-        .catch(err=>console.error(err));
+        .then(res => callback(res.data))
+        .catch(err => console.error(err));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,6 +86,8 @@ function showProductsSection() {
 }
 
 function putProducts(data) {
+
+    putCositas(data.cositas);
 
     productsList.innerHTML = '';
 
@@ -126,38 +134,38 @@ function deleteMe(id) {
     deleteItem(id, putProducts);
 }
 
-function showNewProductForm(ev) {
+function showProductForm(ev) {
     ev.preventDefault();
     hideAllSections();
-    newProductForm.newId.value = "0";
-    newProductForm.newName.style.backgroundColor = 'white';
-    newProductForm.newName.value = '';
-    newProductForm.newPrice.style.backgroundColor = 'white';
-    newProductForm.newPrice.value = '';
+    productForm.prodId.value = "";
+    productForm.prodName.style.backgroundColor = 'white';
+    productForm.prodName.value = '';
+    productForm.prodPrice.style.backgroundColor = 'white';
+    productForm.prodPrice.value = '';
     productH2.innerHTML = 'New Product';
-    showSection(sectNewProduct);
+    showSection(sectProduct);
 }
 
 function goNewOrEditProduct(ev) {
     ev.preventDefault();
-    newProductForm.newName.style.backgroundColor = 'white';
-    newProductForm.newPrice.style.backgroundColor = 'white';
+    productForm.prodName.style.backgroundColor = 'white';
+    productForm.prodPrice.style.backgroundColor = 'white';
 
     const aProduct = {
-        id: newProductForm.newId.value,
-        name: newProductForm.newName.value,
-        price: newProductForm.newPrice.value
+        id: productForm.prodId.value,
+        name: productForm.prodName.value,
+        price: productForm.prodPrice.value
     }
 
     let valid = true;
 
     if (!aProduct.name) {
-        newProductForm.newName.style.backgroundColor = 'lightpink';
+        productForm.prodName.style.backgroundColor = 'lightpink';
         valid = false;
     }
 
     if (!aProduct.price || isNaN(aProduct.price)) {
-        newProductForm.newPrice.style.backgroundColor = 'lightpink';
+        productForm.prodPrice.style.backgroundColor = 'lightpink';
         valid = false;
     }
     if (!valid) {
@@ -166,31 +174,35 @@ function goNewOrEditProduct(ev) {
 
     hideAllSections();
 
-    if (aProduct.id) {
-        putEditProduct(aProduct, putProducts);
-    } else {
+    if (aProduct.id === "") {
         postNewProduct(aProduct, putProducts);
+    } else {
+        putEditProduct(aProduct, putProducts);
     }
 }
 
 function editMe(id, name, price) {
     hideAllSections();
-    newProductForm.newId.value = id;
-    newProductForm.newName.style.backgroundColor = 'white';
-    newProductForm.newName.value = name;
-    newProductForm.newPrice.style.backgroundColor = 'white';
-    newProductForm.newPrice.value = price;
+    productForm.prodId.value = id;
+    productForm.prodName.style.backgroundColor = 'white';
+    productForm.prodName.value = name;
+    productForm.prodPrice.style.backgroundColor = 'white';
+    productForm.prodPrice.value = price;
     productH2.innerHTML = 'Edit Product';
-    showSection(sectNewProduct);
+    showSection(sectProduct);
+}
+
+function putCositas(cosita) {
+    cositaBox.innerHTML = `<cite>“${cosita}”</cite> M.R.`;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Listeners
 btnProducts.addEventListener("click", showProductsSection);
-btnNewProduct.addEventListener("click", showNewProductForm);
+btnNewProduct.addEventListener("click", showProductForm);
 searchForm.addEventListener("submit", goSearch);
-newProductForm.addEventListener("submit", goNewOrEditProduct);
+productForm.addEventListener("submit", goNewOrEditProduct);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Init

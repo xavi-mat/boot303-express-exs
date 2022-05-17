@@ -4,6 +4,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
+const cositas = require("./cositas.json");
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constants
@@ -11,15 +13,19 @@ const port = 3000;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Fake BD
-let items = [
-    { id: 1, name: 'Taza de Harry Potter', price: 300 },
-    { id: 2, name: 'FIFA 22 PS5', price: 1000 },
-    { id: 3, name: 'Figura Goku Super Saiyan', price: 100 },
-    { id: 4, name: 'Zelda Breath of the Wild', price: 200 },
-    { id: 5, name: 'Skin Valorant', price: 120 },
-    { id: 6, name: 'Taza de Star Wars', price: 220 }
-]
+let items = require("./fakeDB.json");
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Functions
+function dameCositas() {
+    return cositas[Math.floor(Math.random() * cositas.length)];
+}
+
+function saveFakeDB() {
+    const data = JSON.stringify(items, null, 2);
+    fs.writeFile("./fakeDB.json", data, (err)=>console.error(err));
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Middlewares
@@ -28,7 +34,7 @@ app.use(cors());
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Endpoints
+// Client files
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'index.html'));
 });
@@ -38,14 +44,16 @@ app.get('/script', (req, res) => {
     res.sendFile(path.join(__dirname, 'scripts', 'script.js'))
 });
 
+////////////////////////////////////////////////////////////////////////////////
+// API Endpoints
 app.get('/products', (req, res) => {
-    res.send({ description: 'Products', items });
+    res.send({ description: 'Products', items, cositas:dameCositas() });
 });
 
 // Crear endpoint para poder crear un producto nuevo
 app.post('/products', (req, res) => {
     if (!req.body.name || !req.body.price) {
-        res.status(422).send({ msg: 'Fill in all data' });
+        res.status(422).send({ msg: 'Fill in all data', cositas:dameCositas() });
     } else {
         const newItem = {
             id: items.length + 1,
@@ -53,7 +61,8 @@ app.post('/products', (req, res) => {
             price: req.body.price
         }
         items.push(newItem);
-        res.status(201).send({ msg: 'Item created', newItem, items })
+        saveFakeDB();
+        res.status(201).send({ msg: 'Item created', newItem, items, cositas:dameCositas() })
     }
 });
 
@@ -66,9 +75,10 @@ app.put('/products/:id', (req, res) => {
         const item = results[0];
         item.name = req.body.name ? req.body.name : item.name;
         item.price = req.body.price ? req.body.price : item.price;
-        res.status(200).send({ msg: 'Item updated', items });
+        saveFakeDB();
+        res.status(200).send({ msg: 'Item updated', items, cositas:dameCositas() });
     } else {
-        res.status(404).send({ msg: 'Product not found' });
+        res.status(404).send({ msg: 'Product not found', cositas:dameCositas() });
     }
 });
 
@@ -78,9 +88,9 @@ app.delete('/products/:id', (req, res) => {
 
     if (hasItems.length > 0) {
         items = items.filter(item => item.id !== +req.params.id);
-        res.send({ msg: 'Item deleted', items });
+        res.send({ msg: 'Item deleted', items, cositas:dameCositas() });
     } else {
-        res.send({ msg: 'Product not found', items });
+        res.send({ msg: 'Product not found', items, cositas:dameCositas() });
     }
 });
 
@@ -90,7 +100,7 @@ app.get('/products/price/:min/:max', (req, res) => {
     const results = items.filter(item =>
         item.price >= +req.params.min && item.price <= +req.params.max
     );
-    res.send({ total: results.length, items: results });
+    res.send({ total: results.length, items: results, cositas:dameCositas() });
 });
 
 // Crear un filtro que cuando busque en postman por parámetro el id de un producto me devuelva ese producto
@@ -98,9 +108,9 @@ app.get('/products/:id', (req, res) => {
     const hasItems = items.filter(item => item.id === +req.params.id);
 
     if (hasItems.length > 0) {
-        res.send({ item: hasItems[0] });
+        res.send({ item: hasItems[0], cositas:dameCositas() });
     } else {
-        res.status(404).send({ msg: 'Product not found' });
+        res.status(404).send({ msg: 'Product not found', cositas:dameCositas() });
     }
 });
 
@@ -109,7 +119,7 @@ app.get('/products/name/:name', (req, res) => {
 
     const results = items.filter(item => item.name === req.params.name);
 
-    res.send({ total: results.length, items: results });
+    res.send({ total: results.length, items: results, cositas:dameCositas() });
 });
 
 // Crear un filtro que cuando busque en postman por parámetro el name de un producto me devuelva ese producto
@@ -119,7 +129,7 @@ app.get('/products/search/:search', (req, res) => {
 
     const results = items.filter(item => regex.test(item.name));
 
-    res.send({ total: results.length, items: results });
+    res.send({ total: results.length, items: results, cositas:dameCositas() });
 });
 
 

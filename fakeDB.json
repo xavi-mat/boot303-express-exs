@@ -1,0 +1,47 @@
+[
+    {
+      "id": 1,
+      "name": "Taza de Harry Potter",
+      "price": "300"
+    },
+    {
+      "id": 2,
+      "name": "FIFA 22 PS5",
+      "price": 1000
+    },
+    {
+      "id": 3,
+      "name": "Figura Goku Super Saiyan",
+      "price": 100
+    },
+    {
+      "id": 4,
+      "name": "Zelda Breath of the Wild",
+      "price": 200
+    },
+    {
+      "id": 5,
+      "name": "Skin Valorant",
+      "price": "14.14"
+    },
+    {
+      "id": 6,
+      "name": "Taza de Star Wars",
+      "price": 220
+    },
+    {
+      "id": 7,
+      "name": "Taza de Tarzán",
+      "price": "23"
+    },
+    {
+      "id": 8,
+      "name": "Taza de Chita",
+      "price": "12.2"
+    },
+    {
+      "id": 9,
+      "name": "Taza de One Piece",
+      "price": "99"
+    }
+  ]
